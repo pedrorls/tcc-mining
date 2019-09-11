@@ -8,7 +8,7 @@ def home(request):
     return render(request, "home.html", {"teachers_list": []})
 
 
-def upload_curriculum(request):
+def new_teacher(request):
     if request.method == "POST":
         form = TeacherForm(request.POST, request.FILES)
         if form.is_valid():
@@ -16,5 +16,5 @@ def upload_curriculum(request):
             return redirect("home")
     else:
         form = TeacherForm()
-    return render(request, "upload_curriculum.html", {"form": form})
+    return render(request, "new_teacher.html", {"form": form})
 
