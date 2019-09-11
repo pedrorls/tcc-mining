@@ -4,7 +4,7 @@ from django.db import models
 class Professor(models.Model):
     """Model definition for Professor."""
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     curriculum = models.FileField(upload_to="docs/")
 
     class Meta:
