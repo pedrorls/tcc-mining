@@ -21,6 +21,9 @@ class Professor(models.Model):
 class Word(models.Model):
     """Model definition for Word."""
 
+    professor = models.ForeignKey(
+        Professor, on_delete=models.CASCADE, related_name="professor"
+    )
     word = models.CharField(max_length=50)
     frequency = models.IntegerField()
     relative_frequency = models.FloatField()
@@ -28,6 +31,7 @@ class Word(models.Model):
     class Meta:
         """Meta definition for Word."""
 
+        unique_together = ("professor", "word")
         verbose_name = "Word"
         verbose_name_plural = "Words"
 
@@ -35,17 +39,3 @@ class Word(models.Model):
         """Unicode representation of Word."""
         return self.word
 
-
-class BagOfWord(models.Model):
-    """Model definition for BagOfWord."""
-
-    professor = models.OneToOneField(
-        Professor, on_delete=models.CASCADE, related_name="professor"
-    )
-    word = models.ManyToManyField(Word)
-
-    class Meta:
-        """Meta definition for BagOfWord."""
-
-        verbose_name = "BagOfWord"
-        verbose_name_plural = "BagOfWords"

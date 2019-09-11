@@ -4,4 +4,3 @@ from .models import *
 # Register your models here.
 admin.site.register(Professor)
 admin.site.register(Word)
-admin.site.register(BagOfWord)
