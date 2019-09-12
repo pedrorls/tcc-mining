@@ -4,5 +4,11 @@
 {% block content %}
 <h1>Hello World</h1>
 
+<form action="{% url 'search_result' %}" method="GET">
+  {% csrf_token %}
+  <label>Insert search term</label>
+  <input name=text type="text">
+</form>
+
 <a href="{% url 'new_teacher' %}">add new teacher</a>
 {% endblock content %}

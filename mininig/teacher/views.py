@@ -1,18 +1,42 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from .forms import TeacherForm
+from .models import Professor, Word
+from utils.mining_stages import text_processing
+from django.conf import settings
 
 # Create your views here.
 
 
 def home(request):
-    return render(request, "home.html", {"teachers_list": []})
+    return render_to_response("home.html")
+
+
+def search_result(request):
+    query = request.GET.get("text")
+
+    words = Word.objects.filter(word__icontains=query)
+    return render(request, "search_result.html", {"words": words})
 
 
 def new_teacher(request):
     if request.method == "POST":
         form = TeacherForm(request.POST, request.FILES)
         if form.is_valid():
+            professor_name = form.cleaned_data["name"]
+            filename = form.cleaned_data["curriculum"].name
             form.save()
+            teacher = Professor.objects.get(name=professor_name)
+            keys = text_processing(filename)
+            words_obj_lst = [
+                Word(
+                    professor=teacher,
+                    word=key["word"],
+                    frequency=key["frequency"],
+                    relative_frequency=key["relative_frequency"],
+                )
+                for key in keys
+            ]
+            Word.objects.bulk_create(words_obj_lst)
             return redirect("home")
     else:
         form = TeacherForm()

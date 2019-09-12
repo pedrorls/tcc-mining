@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1>Results</h1>
+
+{% for word in words %}
+<ul>
+  <li>{{word.professor.name}}</li>
+</ul>
+{% endfor %}
+
+<a href="{% url 'home' %}">Back to home</a>
+{% endblock content %}
