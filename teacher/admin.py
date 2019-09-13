@@ -3,4 +3,10 @@ from .models import *
 
 # Register your models here.
 admin.site.register(Professor)
-admin.site.register(Word)
+
+
+class WordAdmin(admin.ModelAdmin):
+    list_display = ("word", "frequency", "relative_frequency")
+
+
+admin.site.register(Word, WordAdmin)

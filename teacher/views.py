@@ -1,8 +1,11 @@
+import operator
+from functools import reduce
 from django.shortcuts import render, redirect, render_to_response
+from django.db.models import Q
+
 from .forms import TeacherForm
 from .models import Professor, Word
 from utils.mining_stages import text_processing
-from django.conf import settings
 
 # Create your views here.
 
@@ -12,9 +15,11 @@ def home(request):
 
 
 def search_result(request):
-    query = request.GET.get("text")
-
-    words = Word.objects.filter(word__icontains=query)
+    search_term = request.GET.get("text")
+    query = reduce(
+        operator.__or__, (Q(word__icontains=item) for item in search_term.split())
+    )
+    words = Word.objects.filter(query).filter(relative_frequency__gt=1)
     return render(request, "search_result.html", {"words": words})
 
 
