@@ -7,20 +7,16 @@ from .forms import TeacherForm
 from .models import Professor, Word
 from utils.mining_stages import text_processing
 
-# Create your views here.
-
 
 def home(request):
-    return render_to_response("home.html")
-
-
-def search_result(request):
     search_term = request.GET.get("text")
-    query = reduce(
-        operator.__or__, (Q(word__icontains=item) for item in search_term.split())
-    )
-    words = Word.objects.filter(query).filter(relative_frequency__gt=1)
-    return render(request, "search_result.html", {"words": words})
+    if search_term != "":
+        query = reduce(
+            operator.__or__, (Q(word__iexact=item) for item in search_term.split())
+        )
+        words = Word.objects.filter(query).filter(relative_frequency__gt=1)
+        return render(request, "home.html", {"words": words})
+    return render(request, "home.html", {})
 
 
 def new_teacher(request):

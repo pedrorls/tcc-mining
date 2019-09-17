@@ -1,0 +1,13 @@
+body {
+  background-color: #fcfcfc
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card:not(:first-child) {
+  margin-top: 10px;
+}
