@@ -1,21 +1,32 @@
 import operator
 from functools import reduce
 from django.shortcuts import render, redirect, render_to_response
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from .forms import TeacherForm
 from .models import Professor, Word
-from utils.mining_stages import text_processing
+from utils.mining_stages import text_processing, remove_accents
 
 
 def home(request):
     search_term = request.GET.get("text")
-    if search_term != "":
+    if search_term is not None:
         query = reduce(
-            operator.__or__, (Q(word__iexact=item) for item in search_term.split())
+            operator.__or__,
+            (Q(word__iexact=item) for item in remove_accents(search_term.split())),
         )
         words = Word.objects.filter(query).filter(relative_frequency__gt=1)
-        return render(request, "home.html", {"words": words})
+
+        data = dict()
+        for word in words:
+            if word.professor.name in data.keys():
+                data[word.professor.name].append(word.word)
+            else:
+                data[word.professor.name] = [word.word]
+
+        print(data)
+
+        return render(request, "home.html", {"data": data})
     return render(request, "home.html", {})
 
 

@@ -3,30 +3,30 @@
 
 {% block content %}
 <div class="box">
-<div class=header>
-  <span>
-    <h1 class="title">Professor Search</h1>
-    <h2 class="subtitle">Search by areas of expertise</h2>
-  </span>
-  <a class="button is-link " href="{% url 'new_teacher' %}">
-    <span class="icon">
-      <i class="fas fa-plus"></i>
+  <div class=header>
+    <span>
+      <h1 class="title">Professor Search</h1>
+      <h2 class="subtitle">Search by areas of expertise</h2>
     </span>
-    add new teacher
-  </a>
-</div>
+    <a class="button is-link " href="{% url 'new_teacher' %}">
+      <span class="icon">
+        <i class="fas fa-plus"></i>
+      </span>
+      add new teacher
+    </a>
+  </div>
 
-<form action="{% url 'home' %}" method="GET">
-  {% csrf_token %}
-  <input class="input is-medium is-rounded" name=text type="text" placeholder="Insert search terms" required>
-</form>
+  <form action="{% url 'home' %}" method="GET">
+    {% csrf_token %}
+    <input class="input is-medium is-rounded" name=text type="text" placeholder="Insert search terms" required>
+  </form>
 
 </div>
 
 <h1 class="title">Results</h1>
 
 
-{% for word in words %}
+{% for key, value in data.items %}
 <div class="card">
   <div class="card-content">
     <div class="media">
@@ -36,12 +36,13 @@
         </figure>
       </div>
       <div class="media-content">
-        <p class="title is-4">{{word.professor.name}}</p>
+        <p class="title is-4">{{key}}</p>
       </div>
     </div>
-
     <div class="content">
-      <span class="tag is-info">{{word}}</span>
+      {% for item in value %}
+      <span class="tag is-info">{{item}}</span>
+      {% endfor %}
     </div>
   </div>
 </div>
