@@ -1,15 +1,13 @@
-{% extends 'base.html' %}
-{% load custom_filter %}
-{% block content %}
+{% extends 'base.html' %} {% load custom_filter %} {% block content %}
 
 <div class="box">
-<h1 class="title">Add New Professor</h1>
-<form method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
+  <h1 class="title">Adicionar novo professor</h1>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
 
-  <div class="field">
-    <label class="label">Name</label>
-    <div class="control">
+    <div class="field">
+      <label class="label">Nome</label>
+      <div class="control">
       {{ form.name|add_class:"input" }}
     </div>
     <label class="label">Curriculum</label>
@@ -22,11 +20,10 @@
       <button class="button is-link" type="submit">Upload</button>
     </div>
     <div class="control">
-      <a class="button is-text" href="{% url 'home' %}">Back to home</a>
+        <a class="button is-text" href="{% url 'home' %}">Voltar para home</a>
+      </div>
     </div>
-  </div>
-</form>
+  </form>
 </div>
-
 
 {% endblock content %}

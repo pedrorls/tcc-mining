@@ -20,13 +20,14 @@ def home(request):
         data = dict()
         for word in words:
             if word.professor.name in data.keys():
-                data[word.professor.name].append(word.word)
+                data[word.professor.name] += word.relative_frequency
             else:
-                data[word.professor.name] = [word.word]
+                data[word.professor.name] = word.relative_frequency
 
-        print(data)
+        sorted_dict = sorted(data.items(), key=operator.itemgetter(1), reverse=True)
+        print(sorted_dict)
 
-        return render(request, "home.html", {"data": data})
+        return render(request, "home.html", {"data": sorted_dict})
     return render(request, "home.html", {})
 
 
