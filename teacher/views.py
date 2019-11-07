@@ -1,4 +1,5 @@
 import operator
+from collections import defaultdict
 from functools import reduce
 from django.shortcuts import render, redirect, render_to_response
 from django.db.models import Q, Count
@@ -6,6 +7,10 @@ from django.db.models import Q, Count
 from .forms import TeacherForm
 from .models import Professor, Word
 from utils.mining_stages import text_processing, remove_accents
+
+
+def __sort_professors(key, value):
+    cmp(value.hits[1])
 
 
 def home(request):
@@ -17,17 +22,32 @@ def home(request):
         )
         words = Word.objects.filter(query).filter(relative_frequency__gt=1)
 
-        data = dict()
+        data = defaultdict(lambda: {"frequency": 0, "bag_of_words": [], "hits": 0})
         for word in words:
-            if word.professor.name in data.keys():
-                data[word.professor.name] += word.relative_frequency
-            else:
-                data[word.professor.name] = word.relative_frequency
+            professor_name = word.professor.name
+            data[professor_name]["frequency"] += word.relative_frequency
+            data[professor_name]["hits"] += 1
+            data[professor_name]["bag_of_words"].append(word.word)
 
-        sorted_dict = sorted(data.items(), key=operator.itemgetter(1), reverse=True)
-        print(sorted_dict)
+        list_data = []
+        for key, value in data.items():
+            list_data.append(
+                {
+                    "name": key,
+                    "frequency": value["frequency"],
+                    "hits": value["hits"],
+                    "bag_of_words": value["bag_of_words"],
+                }
+            )
 
-        return render(request, "home.html", {"data": sorted_dict})
+        sorted_list_data = sorted(
+            list_data, key=operator.itemgetter("frequency"), reverse=True
+        )
+        sorted_list_data = sorted(
+            list_data, key=operator.itemgetter("hits"), reverse=True
+        )
+
+        return render(request, "home.html", {"data": sorted_list_data[:10]})
     return render(request, "home.html", {})
 
 
